@@ -18,7 +18,7 @@ OpsGPT is a multi-agent AI system that simulates real-world incident response us
 User → UI (Netlify) → API (Render) → Claude AI
 
 ## 🚀 Live Demo
-- UI: https://aiagentincident.netlify.app
+- UI: https://opsgpt.netlify.app/
 - API: https://incident-ai.onrender.com
 
 ## 💡 Use Case
