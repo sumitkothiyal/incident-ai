@@ -177,7 +177,7 @@ async function send() {
   addAI("⏳ Analyzing...");
 
   try {
-    const res = await fetch("http://localhost:3000/ask", {
+    const res = await fetch("https://incident-ai.onrender.com/ask", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ input })
