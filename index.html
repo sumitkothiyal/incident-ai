@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>⚡ OpsGPT</title>
+<style>
+body { margin:0; font-family:Arial; background:#202123; color:white; display:flex; }
+#sidebar { width:260px; background:#111; padding:15px; }
+#main { flex:1; display:flex; flex-direction:column; }
+header { padding:10px; background:#111; }
+#chat { flex:1; overflow:auto; padding:20px; }
+.bubble { margin:10px 0; padding:10px; border-radius:10px; }
+.user { background:#444654; text-align:right; }
+.ai { background:#2a2b35; }
+#inputArea { display:flex; padding:10px; background:#111; }
+input, select { padding:8px; margin-right:10px; }
+button { background:#19c37d; border:none; padding:10px; color:white; }
+.card { background:#2a2b35; padding:10px; margin-top:8px; border-radius:6px; }
+</style>
+</head>
+
+<body>
+
+<div id="sidebar">
+  <h3>📊 Dashboard</h3>
+  <div>P1: <span id="p1">0</span></div>
+  <div>P2: <span id="p2">0</span></div>
+  <div>P3: <span id="p3">0</span></div>
+</div>
+
+<div id="main">
+<header>⚡ OpsGPT</header>
+<div id="chat"></div>
+
+<div id="inputArea">
+  <select id="domain">
+    <option value="it">IT</option>
+    <option value="business">Business</option>
+    <option value="security">Security</option>
+  </select>
+
+  <input id="input" placeholder="Describe incident..." />
+  <button onclick="send()">Send</button>
+</div>
+</div>
+
+<script>
+const API = "https://incident-ai.onrender.com";
+
+async function send() {
+  const input = document.getElementById("input").value;
+  const domain = document.getElementById("domain").value;
+
+  addUser(input);
+
+  const res = await fetch(`${API}/ask`, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ input, domain })
+  });
+
+  const data = await res.json();
+
+  addResponse(data);
+  updateDashboard();
+}
+
+function addUser(text){
+  const div=document.createElement("div");
+  div.className="bubble user";
+  div.innerText=text;
+  chat.appendChild(div);
+}
+
+function addResponse(data){
+  const div=document.createElement("div");
+  div.className="bubble ai";
+
+  div.innerHTML = `
+    <b>🚨 ${data.severity.toUpperCase()}</b>
+    <div class="card"><b>Support</b><br>${data.support}</div>
+    <div class="card"><b>Analytics</b><br>${data.analytics}</div>
+    <div class="card"><b>Dev</b><br>${data.dev}</div>
+  `;
+
+  chat.appendChild(div);
+}
+
+async function updateDashboard(){
+  const res = await fetch(`${API}/stats`);
+  const stats = await res.json();
+
+  document.getElementById("p1").innerText = stats.p1;
+  document.getElementById("p2").innerText = stats.p2;
+  document.getElementById("p3").innerText = stats.p3;
+}
+</script>
+
+</body>
+</html>
